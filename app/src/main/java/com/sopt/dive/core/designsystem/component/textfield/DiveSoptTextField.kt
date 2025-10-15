@@ -1,4 +1,4 @@
-package com.sopt.dive.core.designsystem.component
+package com.sopt.dive.core.designsystem.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,18 +24,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sopt.dive.R
-import com.sopt.dive.core.util.noRippleClickable
 
 @Composable
 fun DiveSoptTextField(
@@ -48,12 +42,11 @@ fun DiveSoptTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     singleLine: Boolean = true,
-    isPasswordVisible: Boolean = true,
-    onIconClick: () -> Unit = {}
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: @Composable () -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val iconId = if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
 
     BasicTextField(
         value = value,
@@ -71,21 +64,23 @@ fun DiveSoptTextField(
             keyboardType = keyboardType,
             imeAction = imeAction
         ),
-        keyboardActions = if (imeAction == ImeAction.Next) {
-            KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Next) }
-            )
-        } else {
-            KeyboardActions(
-                onDone = { focusManager.clearFocus() }
-            )
+        keyboardActions = when (imeAction) {
+            ImeAction.Next -> {
+                KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            }
+
+            ImeAction.Done -> {
+                KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                )
+            }
+
+            else -> KeyboardActions.Default
         },
         singleLine = singleLine,
-        visualTransformation = if (isPasswordVisible) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
+        visualTransformation = visualTransformation,
         cursorBrush = SolidColor(Color.Gray),
         decorationBox = { innerTextField ->
             Column(
@@ -112,12 +107,7 @@ fun DiveSoptTextField(
                             )
                         }
                     }
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = iconId),
-                        contentDescription = "",
-                        modifier = Modifier.noRippleClickable(onClick = onIconClick),
-                        tint = Color.LightGray
-                    )
+                    trailingIcon()
                 }
 
                 Box(

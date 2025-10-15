@@ -13,13 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sopt.dive.core.designsystem.component.DiveSoptButton
-import com.sopt.dive.core.designsystem.component.DiveSoptTextField
+import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
+import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
+import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
 
 @Composable
 fun SignInRoute(
@@ -95,14 +94,11 @@ private fun SignInScreen(
             fontSize = 30.sp
         )
 
-        DiveSoptTextField(
-            value = password,
-            onValueChanged = onPasswordChanged,
-            placeholder = "비밀번호를 입력해주세요",
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done,
-            isPasswordVisible = isPasswordVisible,
-            onIconClick = onIconClick
+        DiveSoptPasswordTextField(
+            password = password,
+            onPasswordChanged = onPasswordChanged,
+            onIconClick = onIconClick,
+            isPasswordVisible = isPasswordVisible
         )
 
         Spacer(modifier = Modifier.weight(1f))
