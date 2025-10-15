@@ -27,7 +27,6 @@ import com.sopt.dive.core.util.DiveSoptValidator.isPasswordFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isUserIdFormat
 import com.sopt.dive.core.util.Keys
 import com.sopt.dive.core.util.validateMessage
-import com.sopt.dive.presentation.signin.SignInActivity
 import kotlinx.coroutines.launch
 
 class SignUpActivity : ComponentActivity() {
@@ -77,13 +76,15 @@ class SignUpActivity : ComponentActivity() {
                                     nickname
                                 ) && isMbtiFormat(mbti)
                             ) {
-                                val intent = Intent(context, SignInActivity::class.java)
-                                intent.putExtra(Keys.USER_ID, userId)
-                                intent.putExtra(Keys.USER_PASSWORD, password)
-                                intent.putExtra(Keys.USER_NICKNAME, nickname)
-                                intent.putExtra(Keys.USER_MBTI, mbti)
-                                Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
-                                setResult(RESULT_OK, intent)
+                                val result = Intent().apply {
+                                    putExtra(Keys.USER_ID, userId)
+                                    putExtra(Keys.USER_PASSWORD, password)
+                                    putExtra(Keys.USER_NICKNAME, nickname)
+                                    putExtra(Keys.USER_MBTI, mbti)
+                                }
+                                Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT)
+                                    .show()
+                                setResult(RESULT_OK, result)
                                 finish()
                             } else {
                                 scope.launch {

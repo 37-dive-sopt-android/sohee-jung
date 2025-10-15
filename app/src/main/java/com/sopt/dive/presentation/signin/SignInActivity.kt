@@ -18,70 +18,91 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
+import com.sopt.dive.core.UserInfoDatastore.password
+import com.sopt.dive.core.UserInfoDatastore.userId
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
+import com.sopt.dive.core.userDatastore
 import com.sopt.dive.core.util.Keys
 import com.sopt.dive.presentation.main.MainActivity
 import com.sopt.dive.presentation.signup.SignUpActivity
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class SignInActivity : ComponentActivity() {
     private var validateUserId: String? = null
     private var validatePassword: String? = null
     private var validateNickname: String? = null
     private var validateMbti: String? = null
-    private val launcher = registerForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data = result.data
-            validateUserId = data?.getStringExtra(Keys.USER_ID)?:""
-            validatePassword = data?.getStringExtra(Keys.USER_PASSWORD)?:""
-            validateNickname = data?.getStringExtra(Keys.USER_NICKNAME)?:""
-            validateMbti = data?.getStringExtra(Keys.USER_MBTI)?:""
+    private val launcher =
+        registerForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                validateUserId = data?.getStringExtra(Keys.USER_ID) ?: ""
+                validatePassword = data?.getStringExtra(Keys.USER_PASSWORD) ?: ""
+                validateNickname = data?.getStringExtra(Keys.USER_NICKNAME) ?: ""
+                validateMbti = data?.getStringExtra(Keys.USER_MBTI) ?: ""
+            }
         }
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            DiveTheme {
-                Scaffold(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = PurpleGrey80)
-                ) { innerPadding ->
-                    val context = LocalContext.current
+        lifecycleScope.launch {
+            val prefs = applicationContext.userDatastore.data.first()
+            validateUserId = prefs[userId]
+            validatePassword = prefs[password]
 
-                    var userId by remember { mutableStateOf("") }
-                    var password by remember { mutableStateOf("") }
+            if (!validateUserId.isNullOrEmpty() || !validatePassword.isNullOrEmpty()) {
+                startActivity(Intent(this@SignInActivity, MainActivity::class.java))
+                finish()
+            } else {
+                setContent {
+                    DiveTheme {
+                        Scaffold(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color = PurpleGrey80)
+                        ) { innerPadding ->
+                            val context = LocalContext.current
 
-                    var isPasswordVisible by remember { mutableStateOf(false) }
+                            var userId by remember { mutableStateOf("") }
+                            var password by remember { mutableStateOf("") }
 
-                    SignInRoute(
-                        userId = userId,
-                        onUserIdChanged = { userId = it },
-                        password = password,
-                        onPasswordChanged = { password = it },
-                        isPasswordVisible = isPasswordVisible,
-                        onIconClick = { isPasswordVisible = !isPasswordVisible },
-                        onSignInClick = {
-                            if (userId == validateUserId && password == validatePassword) {
-                                val intent = Intent(context, MainActivity::class.java)
-                                intent.putExtra(Keys.USER_ID, userId)
-                                intent.putExtra(Keys.USER_PASSWORD, password)
-                                intent.putExtra(Keys.USER_NICKNAME, validateNickname)
-                                intent.putExtra(Keys.USER_MBTI, validateMbti)
-                                context.startActivity(intent)
-                                Toast.makeText(context, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        onSignUpClick = {
-                            val intent = Intent(context, SignUpActivity::class.java)
-                            launcher.launch(intent)                        },
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                            var isPasswordVisible by remember { mutableStateOf(false) }
+
+                            SignInRoute(
+                                userId = userId,
+                                onUserIdChanged = { userId = it },
+                                password = password,
+                                onPasswordChanged = { password = it },
+                                isPasswordVisible = isPasswordVisible,
+                                onIconClick = { isPasswordVisible = !isPasswordVisible },
+                                onSignInClick = {
+                                    if (userId == validateUserId && password == validatePassword) {
+                                        val intent = Intent(context, MainActivity::class.java)
+                                        intent.putExtra(Keys.USER_ID, userId)
+                                        intent.putExtra(Keys.USER_PASSWORD, password)
+                                        intent.putExtra(Keys.USER_NICKNAME, validateNickname)
+                                        intent.putExtra(Keys.USER_MBTI, validateMbti)
+                                        context.startActivity(intent)
+                                        Toast.makeText(context, "로그인에 성공했습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                    } else {
+                                        Toast.makeText(context, "로그인에 실패했습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                },
+                                onSignUpClick = {
+                                    val intent = Intent(context, SignUpActivity::class.java)
+                                    launcher.launch(intent)
+                                },
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
+                    }
                 }
             }
         }
