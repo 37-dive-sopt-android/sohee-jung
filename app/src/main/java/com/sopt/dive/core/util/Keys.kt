@@ -5,4 +5,5 @@ object Keys {
     const val USER_PASSWORD = "password"
     const val USER_NICKNAME = "nickname"
     const val USER_MBTI = "mbti"
+    const val IS_LOGGED_IN = "isLoggedIn"
 }

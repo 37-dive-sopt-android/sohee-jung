@@ -15,10 +15,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
+import com.sopt.dive.core.SessionStateStore
+import com.sopt.dive.core.UserInfoDatastore.mbti
+import com.sopt.dive.core.UserInfoDatastore.nickname
 import com.sopt.dive.core.UserInfoDatastore.password
 import com.sopt.dive.core.UserInfoDatastore.userId
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
@@ -46,21 +51,25 @@ class SignInActivity : ComponentActivity() {
             }
         }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         lifecycleScope.launch {
             val prefs = applicationContext.userDatastore.data.first()
-            validateUserId = prefs[userId]
-            validatePassword = prefs[password]
+            val savedId = prefs[userId] ?: " "
+            val savedPassword = prefs[password] ?: ""
+            val savedNickname = prefs[nickname] ?: ""
+            val savedMbti = prefs[mbti] ?: ""
+            var isLoggedIn = prefs[SessionStateStore.isLoggedIn] ?: false
 
-            if (!validateUserId.isNullOrEmpty() || !validatePassword.isNullOrEmpty()) {
-                startActivity(Intent(this@SignInActivity, MainActivity::class.java))
+            if (isLoggedIn) {
+                ActivityToMain(this@SignInActivity, savedId, savedPassword, savedNickname, savedMbti)
                 finish()
             } else {
                 setContent {
                     DiveTheme {
+                        val scope = rememberCoroutineScope()
+
                         Scaffold(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -82,12 +91,13 @@ class SignInActivity : ComponentActivity() {
                                 onIconClick = { isPasswordVisible = !isPasswordVisible },
                                 onSignInClick = {
                                     if (userId == validateUserId && password == validatePassword) {
-                                        val intent = Intent(context, MainActivity::class.java)
-                                        intent.putExtra(Keys.USER_ID, userId)
-                                        intent.putExtra(Keys.USER_PASSWORD, password)
-                                        intent.putExtra(Keys.USER_NICKNAME, validateNickname)
-                                        intent.putExtra(Keys.USER_MBTI, validateMbti)
-                                        context.startActivity(intent)
+                                        scope.launch {
+                                            context.userDatastore.edit {
+                                                it[SessionStateStore.isLoggedIn] = true
+                                            }
+                                        }
+                                        ActivityToMain(this@SignInActivity, userId, password, validateNickname!!, validateMbti!!)
+                                        finish()
                                         Toast.makeText(context, "로그인에 성공했습니다.", Toast.LENGTH_SHORT)
                                             .show()
                                     } else {
@@ -107,4 +117,20 @@ class SignInActivity : ComponentActivity() {
             }
         }
     }
+}
+
+private fun ActivityToMain(
+    context: Activity,
+    userId: String,
+    password: String,
+    nickname: String,
+    mbti: String
+) {
+    val intent = Intent(context, MainActivity::class.java).apply {
+        putExtra(Keys.USER_ID, userId)
+        putExtra(Keys.USER_PASSWORD, password)
+        putExtra(Keys.USER_NICKNAME, nickname)
+        putExtra(Keys.USER_MBTI, mbti)
+    }
+    context.startActivity(intent)
 }

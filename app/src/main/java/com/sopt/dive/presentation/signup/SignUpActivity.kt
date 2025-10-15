@@ -19,8 +19,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.preferences.core.edit
+import com.sopt.dive.core.UserInfoDatastore
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
+import com.sopt.dive.core.userDatastore
 import com.sopt.dive.core.util.DiveSoptValidator.isMbtiFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isNicknameFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isPasswordFormat
@@ -76,16 +79,25 @@ class SignUpActivity : ComponentActivity() {
                                     nickname
                                 ) && isMbtiFormat(mbti)
                             ) {
-                                val result = Intent().apply {
-                                    putExtra(Keys.USER_ID, userId)
-                                    putExtra(Keys.USER_PASSWORD, password)
-                                    putExtra(Keys.USER_NICKNAME, nickname)
-                                    putExtra(Keys.USER_MBTI, mbti)
+                                scope.launch {
+                                    context.userDatastore.edit { prefs ->
+                                        prefs[UserInfoDatastore.userId] = userId
+                                        prefs[UserInfoDatastore.password] = password
+                                        prefs[UserInfoDatastore.nickname] = nickname
+                                        prefs[UserInfoDatastore.mbti] = mbti
+                                    }
+                                    val result = Intent().apply {
+                                        putExtra(Keys.USER_ID, userId)
+                                        putExtra(Keys.USER_PASSWORD, password)
+                                        putExtra(Keys.USER_NICKNAME, nickname)
+                                        putExtra(Keys.USER_MBTI, mbti)
+                                    }
+                                    Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT)
+                                        .show()
+                                    setResult(RESULT_OK, result)
+                                    finish()
                                 }
-                                Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT)
-                                    .show()
-                                setResult(RESULT_OK, result)
-                                finish()
+
                             } else {
                                 scope.launch {
                                     val msg = errors.joinToString(separator = "\n")
