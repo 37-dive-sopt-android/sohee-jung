@@ -20,10 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
-import com.sopt.dive.core.UserInfoDatastore
+import com.sopt.dive.data.UserInfoDatastore
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
-import com.sopt.dive.core.userDatastore
+import com.sopt.dive.data.userDatastore
 import com.sopt.dive.core.util.DiveSoptValidator.isMbtiFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isNicknameFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isPasswordFormat

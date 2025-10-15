@@ -1,4 +1,4 @@
-package com.sopt.dive.core
+package com.sopt.dive.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
