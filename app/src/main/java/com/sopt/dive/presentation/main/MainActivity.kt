@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.sopt.dive.core.designsystem.theme.DiveTheme
-import com.sopt.dive.core.designsystem.theme.PurpleGrey80
+import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
+import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
 import com.sopt.dive.core.util.Keys
 
 class MainActivity : ComponentActivity() {

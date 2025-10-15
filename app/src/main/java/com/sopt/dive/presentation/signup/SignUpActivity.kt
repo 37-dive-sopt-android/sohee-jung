@@ -24,15 +24,14 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import com.sopt.dive.R
-import com.sopt.dive.core.designsystem.theme.DiveTheme
-import com.sopt.dive.core.designsystem.theme.PurpleGrey80
+import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
+import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
 import com.sopt.dive.core.util.DiveSoptValidator.isMbtiFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isNicknameFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isPasswordFormat
 import com.sopt.dive.core.util.DiveSoptValidator.isUserIdFormat
 import com.sopt.dive.core.util.Keys
 import com.sopt.dive.core.util.validateMessage
-import com.sopt.dive.presentation.main.MainActivity
 import com.sopt.dive.presentation.signin.SignInActivity
 import kotlinx.coroutines.launch
 
