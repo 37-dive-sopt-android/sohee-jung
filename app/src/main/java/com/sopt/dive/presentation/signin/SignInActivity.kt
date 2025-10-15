@@ -11,17 +11,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import com.sopt.dive.R
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
 import com.sopt.dive.core.util.Keys
@@ -55,7 +51,6 @@ class SignInActivity : ComponentActivity() {
                         .background(color = PurpleGrey80)
                 ) { innerPadding ->
                     val context = LocalContext.current
-                    val focusManager = LocalFocusManager.current
 
                     var userId by remember { mutableStateOf("") }
                     var password by remember { mutableStateOf("") }
@@ -65,16 +60,8 @@ class SignInActivity : ComponentActivity() {
                     SignInRoute(
                         userId = userId,
                         onUserIdChanged = { userId = it },
-                        onKeyboardNext = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
-                        ),
                         password = password,
                         onPasswordChanged = { password = it },
-                        onKeyboardDone = KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                            }
-                        ),
                         isPasswordVisible = isPasswordVisible,
                         onIconClick = { isPasswordVisible = !isPasswordVisible },
                         onSignInClick = {
@@ -93,7 +80,6 @@ class SignInActivity : ComponentActivity() {
                         onSignUpClick = {
                             val intent = Intent(context, SignUpActivity::class.java)
                             launcher.launch(intent)                        },
-                        iconId = if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

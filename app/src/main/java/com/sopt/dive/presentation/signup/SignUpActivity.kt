@@ -2,7 +2,6 @@ package com.sopt.dive.presentation.signup
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,7 +9,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,10 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import com.sopt.dive.R
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
 import com.sopt.dive.core.util.DiveSoptValidator.isMbtiFormat
@@ -51,7 +46,6 @@ class SignUpActivity : ComponentActivity() {
                     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                 ) { innerPadding ->
                     val context = LocalContext.current
-                    val focusManager = LocalFocusManager.current
 
                     var userId by remember { mutableStateOf("") }
                     var password by remember { mutableStateOf("") }
@@ -63,11 +57,6 @@ class SignUpActivity : ComponentActivity() {
                     SignUpRoute(
                         userId = userId,
                         onUserIdChanged = { userId = it },
-                        onKeyboardNext = KeyboardActions(
-                            onNext = {
-                                Log.d("TAG", "KeyboardActions-Next")
-                                focusManager.moveFocus(FocusDirection.Next)
-                            }),
                         password = password,
                         onPasswordChanged = { password = it },
                         isPasswordVisible = isPasswordVisible,
@@ -76,12 +65,6 @@ class SignUpActivity : ComponentActivity() {
                         onNicknameChanged = { nickname = it },
                         mbti = mbti,
                         onMbtiChanged = { mbti = it },
-                        onKeyboardDone = KeyboardActions(
-                            onDone = {
-                                Log.d("TAG", "KeyboardActions-Done")
-                                focusManager.clearFocus()
-                            }
-                        ),
                         onSignUpClick = {
                             val errors = validateMessage(
                                 userId = userId,
@@ -109,7 +92,6 @@ class SignUpActivity : ComponentActivity() {
                                 }
                             }
                         },
-                        iconId = if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
