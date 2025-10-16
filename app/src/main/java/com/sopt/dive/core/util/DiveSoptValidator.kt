@@ -28,25 +28,22 @@ object DiveSoptValidator {
     }
 }
 
-fun validateMessage(
+fun validateErrorMessage(
     userId: String,
     password: String,
     nickname: String,
     mbti: String
-): List<String> {
-    val errors = mutableListOf<String>()
+): String? = when {
+    !isUserIdFormat(userId) -> ErrorMessage.USER_ID.message
+    !isPasswordFormat(password) -> ErrorMessage.PASSWORD.message
+    !isNicknameFormat(nickname) -> ErrorMessage.NICKNAME.message
+    !isMbtiFormat(mbti) -> ErrorMessage.MBTI.message
+    else -> null
+}
 
-    if (!isUserIdFormat(userId)) {
-        errors += "ID 형식이 올바르지 않습니다. (영문/숫자/한글 6~12자)"
-    }
-    if (!isPasswordFormat(password)) {
-        errors += "비밀번호 형식이 올바르지 않습니다. (영문/숫자/특수문자 조합 8~16자)"
-    }
-    if (!isNicknameFormat(nickname)) {
-        errors += "닉네임 형식이 올바르지 않습니다. (공백 불가)"
-    }
-    if (!isMbtiFormat(mbti)) {
-        errors += "MBTI 형식이 올바르지 않습니다. (예: INTJ)"
-    }
-    return errors
+enum class ErrorMessage(val message: String) {
+    USER_ID("ID 형식이 올바르지 않습니다. (영문/숫자/한글 6~12자)"),
+    PASSWORD("비밀번호 형식이 올바르지 않습니다. (영문/숫자/특수문자 조합 8~12자)"),
+    NICKNAME("닉네임 형식이 올바르지 않습니다. (공백 불가)"),
+    MBTI("MBTI 형식이 올바르지 않습니다. (예: INTJ)")
 }
