@@ -98,11 +98,9 @@ class SignInActivity : ComponentActivity() {
                                         }
                                         ActivityToMain(this@SignInActivity, userId, password, validateNickname!!, validateMbti!!)
                                         finish()
-                                        Toast.makeText(context, "로그인에 성공했습니다.", Toast.LENGTH_SHORT)
-                                            .show()
+                                        Toast.makeText(context, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
                                     } else {
-                                        Toast.makeText(context, "로그인에 실패했습니다.", Toast.LENGTH_SHORT)
-                                            .show()
+                                        Toast.makeText(context, "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
                                     }
                                 },
                                 onSignUpClick = {

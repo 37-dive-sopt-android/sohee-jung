@@ -68,17 +68,9 @@ class SignUpActivity : ComponentActivity() {
                         mbti = mbti,
                         onMbtiChanged = { mbti = it },
                         onSignUpClick = {
-                            val errors = validateMessage(
-                                userId = userId,
-                                password = password,
-                                nickname = nickname,
-                                mbti = mbti
-                            )
+                            val errors = validateMessage(userId = userId, password = password, nickname = nickname, mbti = mbti)
 
-                            if (isUserIdFormat(userId) && isPasswordFormat(password) && isNicknameFormat(
-                                    nickname
-                                ) && isMbtiFormat(mbti)
-                            ) {
+                            if (isUserIdFormat(userId) && isPasswordFormat(password) && isNicknameFormat(nickname) && isMbtiFormat(mbti)) {
                                 scope.launch {
                                     context.userDatastore.edit { prefs ->
                                         prefs[UserInfoDatastore.userId] = userId
@@ -92,8 +84,7 @@ class SignUpActivity : ComponentActivity() {
                                         putExtra(Keys.USER_NICKNAME, nickname)
                                         putExtra(Keys.USER_MBTI, mbti)
                                     }
-                                    Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT)
-                                        .show()
+                                    Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
                                     setResult(RESULT_OK, result)
                                     finish()
                                 }
