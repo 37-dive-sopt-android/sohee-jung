@@ -19,7 +19,7 @@ fun DiveSoptPasswordTextField(
     onPasswordChanged: (String) -> Unit,
     onIconClick: () -> Unit,
     modifier: Modifier = Modifier,
-    imeAction: ImeAction = ImeAction.Next,
+    imeAction: ImeAction = ImeAction.Default,
     isPasswordVisible: Boolean = true
 ) {
     val iconId = if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off

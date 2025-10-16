@@ -39,9 +39,9 @@ fun DiveSoptTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() },
-    keyboardType: KeyboardType = KeyboardType.Text,
-    imeAction: ImeAction = ImeAction.Next,
-    singleLine: Boolean = true,
+    keyboardType: KeyboardType = KeyboardType.Unspecified,
+    imeAction: ImeAction = ImeAction.Default,
+    maxLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable () -> Unit = {}
 ) {
@@ -79,7 +79,7 @@ fun DiveSoptTextField(
 
             else -> KeyboardActions.Default
         },
-        singleLine = singleLine,
+        maxLines = maxLines,
         visualTransformation = visualTransformation,
         cursorBrush = SolidColor(Color.Gray),
         decorationBox = { innerTextField ->

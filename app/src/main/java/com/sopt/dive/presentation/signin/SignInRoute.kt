@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,7 +90,8 @@ private fun SignInScreen(
         DiveSoptTextField(
             value = userId,
             onValueChanged = onUserIdChanged,
-            placeholder = "아이디를 입력해주세요"
+            placeholder = "아이디를 입력해주세요",
+            imeAction = ImeAction.Next
         )
 
         Spacer(modifier = Modifier.height(25.dp))
@@ -104,6 +106,7 @@ private fun SignInScreen(
             password = password,
             onPasswordChanged = onPasswordChanged,
             onIconClick = onIconClick,
+            imeAction = ImeAction.Done,
             isPasswordVisible = isPasswordVisible
         )
 
