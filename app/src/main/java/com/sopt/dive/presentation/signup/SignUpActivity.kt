@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,16 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
-import com.sopt.dive.data.UserInfoDatastore
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
-import com.sopt.dive.data.userDatastore
-import com.sopt.dive.core.util.DiveSoptValidator.isMbtiFormat
-import com.sopt.dive.core.util.DiveSoptValidator.isNicknameFormat
-import com.sopt.dive.core.util.DiveSoptValidator.isPasswordFormat
-import com.sopt.dive.core.util.DiveSoptValidator.isUserIdFormat
 import com.sopt.dive.core.util.Keys
-import com.sopt.dive.core.util.validateMessage
+import com.sopt.dive.core.util.validateErrorMessage
+import com.sopt.dive.data.UserInfoDatastore
+import com.sopt.dive.data.userDatastore
 import kotlinx.coroutines.launch
 
 class SignUpActivity : ComponentActivity() {
@@ -68,9 +63,9 @@ class SignUpActivity : ComponentActivity() {
                         mbti = mbti,
                         onMbtiChanged = { mbti = it },
                         onSignUpClick = {
-                            val errors = validateMessage(userId = userId, password = password, nickname = nickname, mbti = mbti)
+                            val errorMessage = validateErrorMessage(userId = userId, password = password, nickname = nickname, mbti = mbti)
 
-                            if (isUserIdFormat(userId) && isPasswordFormat(password) && isNicknameFormat(nickname) && isMbtiFormat(mbti)) {
+                            if (errorMessage == null) {
                                 scope.launch {
                                     context.userDatastore.edit { prefs ->
                                         prefs[UserInfoDatastore.userId] = userId
@@ -91,12 +86,11 @@ class SignUpActivity : ComponentActivity() {
 
                             } else {
                                 scope.launch {
-                                    val msg = errors.joinToString(separator = "\n")
-                                    snackbarHostState.showSnackbar(message = msg)
+                                    snackbarHostState.showSnackbar(message = errorMessage)
                                 }
                             }
                         },
-                        modifier = Modifier.padding(innerPadding)
+                        paddingValues = innerPadding
                     )
                 }
             }

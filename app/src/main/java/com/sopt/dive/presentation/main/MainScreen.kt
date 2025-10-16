@@ -2,6 +2,7 @@ package com.sopt.dive.presentation.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,11 +28,13 @@ fun MainScreen(
     userId: String,
     password: String,
     mbti: String,
+    paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ){
     Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(paddingValues)
             .padding(horizontal = 20.dp, vertical = 40.dp)
     ) {
         Row(

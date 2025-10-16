@@ -2,14 +2,15 @@ package com.sopt.dive.presentation.signin
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -19,9 +20,11 @@ import androidx.compose.ui.unit.sp
 import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
+import com.sopt.dive.core.util.conditionalImePadding
 
 @Composable
 fun SignInRoute(
+    paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
     password: String,
@@ -33,6 +36,7 @@ fun SignInRoute(
     modifier: Modifier = Modifier
 ) {
     SignInScreen(
+        paddingValues = paddingValues,
         userId = userId,
         onUserIdChanged = onUserIdChanged,
         password = password,
@@ -47,6 +51,7 @@ fun SignInRoute(
 
 @Composable
 private fun SignInScreen(
+    paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
     password: String,
@@ -60,8 +65,9 @@ private fun SignInScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .imePadding()
-            .padding(horizontal = 20.dp, vertical = 30.dp)
+            .padding(horizontal = 20.dp)
+            .padding(top = paddingValues.calculateTopPadding() + 30.dp)
+            .conditionalImePadding(bottom = 20.dp)
     ) {
         Text(
             text = "Welcome To Sopt",
@@ -110,14 +116,17 @@ private fun SignInScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Text(
-            text = "회원가입하기",
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onSignUpClick),
-            color = Color.Gray,
-            fontSize = 15.sp,
-            textAlign = TextAlign.Center
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = "회원가입하기",
+                modifier = Modifier
+                    .clickable(onClick = onSignUpClick),
+                color = Color.Gray,
+                fontSize = 15.sp,
+            )
+        }
     }
 }

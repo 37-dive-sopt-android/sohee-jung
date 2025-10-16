@@ -1,6 +1,7 @@
 package com.sopt.dive.presentation.signup
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +19,11 @@ import androidx.compose.ui.unit.sp
 import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
+import com.sopt.dive.core.util.conditionalImePadding
 
 @Composable
 fun SignUpRoute(
+    paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
     password: String,
@@ -35,6 +38,7 @@ fun SignUpRoute(
     modifier: Modifier = Modifier
 ) {
     SignUpScreen(
+        paddingValues = paddingValues,
         userId = userId,
         onUserIdChanged = onUserIdChanged,
         password = password,
@@ -46,12 +50,13 @@ fun SignUpRoute(
         mbti = mbti,
         onMbtiChanged = onMbtiChanged,
         onSignUpClick = onSignUpClick,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
 @Composable
 private fun SignUpScreen(
+    paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
     password: String,
@@ -68,7 +73,9 @@ private fun SignUpScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 40.dp)
+            .padding(horizontal = 20.dp)
+            .padding(top = paddingValues.calculateTopPadding() + 30.dp)
+            .conditionalImePadding(bottom = 30.dp)
     ) {
         Text(
             text = "SIGN UP",
@@ -79,7 +86,7 @@ private fun SignUpScreen(
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         UserInfoInput(
             userInfoInputSection = "ID",
@@ -88,7 +95,7 @@ private fun SignUpScreen(
             placeholder = "아이디를 입력해주세요"
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(
             text = "PW",
@@ -103,7 +110,7 @@ private fun SignUpScreen(
             isPasswordVisible = isPasswordVisible
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         UserInfoInput(
             userInfoInputSection = "NICKNAME",
@@ -112,7 +119,7 @@ private fun SignUpScreen(
             placeholder = "닉네임을 입력해주세요"
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         UserInfoInput(
             userInfoInputSection = "MBTI",

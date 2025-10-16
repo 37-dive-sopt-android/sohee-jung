@@ -10,7 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,15 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
+import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
+import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
+import com.sopt.dive.core.util.Keys
 import com.sopt.dive.data.SessionStateStore
 import com.sopt.dive.data.UserInfoDatastore.mbti
 import com.sopt.dive.data.UserInfoDatastore.nickname
 import com.sopt.dive.data.UserInfoDatastore.password
 import com.sopt.dive.data.UserInfoDatastore.userId
-import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
-import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
 import com.sopt.dive.data.userDatastore
-import com.sopt.dive.core.util.Keys
 import com.sopt.dive.presentation.main.MainActivity
 import com.sopt.dive.presentation.signup.SignUpActivity
 import kotlinx.coroutines.flow.first
@@ -83,6 +82,7 @@ class SignInActivity : ComponentActivity() {
                             var isPasswordVisible by remember { mutableStateOf(false) }
 
                             SignInRoute(
+                                paddingValues = innerPadding,
                                 userId = userId,
                                 onUserIdChanged = { userId = it },
                                 password = password,
@@ -106,8 +106,7 @@ class SignInActivity : ComponentActivity() {
                                 onSignUpClick = {
                                     val intent = Intent(context, SignUpActivity::class.java)
                                     launcher.launch(intent)
-                                },
-                                modifier = Modifier.padding(innerPadding)
+                                }
                             )
                         }
                     }
