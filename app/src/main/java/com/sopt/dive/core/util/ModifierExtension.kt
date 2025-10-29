@@ -9,21 +9,20 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.unit.Dp
 
-@Composable
 fun Modifier.noRippleClickable(
     onClick: () -> Unit
-): Modifier = this
-    .clickable(
+): Modifier = composed {
+    this.clickable (
         interactionSource = remember { MutableInteractionSource() },
         indication = null,
         onClick = onClick
     )
+}
 
 @SuppressLint("SuspiciousModifierThen")
 fun Modifier.conditionalImePadding(bottom: Dp): Modifier = composed {

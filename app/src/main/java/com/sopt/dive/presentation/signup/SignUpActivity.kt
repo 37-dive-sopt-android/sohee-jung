@@ -8,17 +8,20 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.datastore.preferences.core.edit
+import androidx.lifecycle.lifecycleScope
 import com.sopt.dive.core.designsystem.ui.theme.DiveTheme
 import com.sopt.dive.core.designsystem.ui.theme.PurpleGrey80
 import com.sopt.dive.core.util.Keys
@@ -33,7 +36,6 @@ class SignUpActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DiveTheme {
-                val scope = rememberCoroutineScope()
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 Scaffold(
@@ -43,6 +45,7 @@ class SignUpActivity : ComponentActivity() {
                     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                 ) { innerPadding ->
                     val context = LocalContext.current
+                    val focusManager = LocalFocusManager.current
 
                     var userId by remember { mutableStateOf("") }
                     var password by remember { mutableStateOf("") }
@@ -54,6 +57,10 @@ class SignUpActivity : ComponentActivity() {
                     SignUpRoute(
                         userId = userId,
                         onUserIdChanged = { userId = it },
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() },
+                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                        ),
                         password = password,
                         onPasswordChanged = { password = it },
                         isPasswordVisible = isPasswordVisible,
@@ -63,10 +70,15 @@ class SignUpActivity : ComponentActivity() {
                         mbti = mbti,
                         onMbtiChanged = { mbti = it },
                         onSignUpClick = {
-                            val errorMessage = validateErrorMessage(userId = userId, password = password, nickname = nickname, mbti = mbti)
+                            val errorMessage = validateErrorMessage(
+                                userId = userId,
+                                password = password,
+                                nickname = nickname,
+                                mbti = mbti
+                            )
 
                             if (errorMessage == null) {
-                                scope.launch {
+                                lifecycleScope.launch {
                                     context.userDatastore.edit { prefs ->
                                         prefs[UserInfoDatastore.userId] = userId
                                         prefs[UserInfoDatastore.password] = password
@@ -79,13 +91,14 @@ class SignUpActivity : ComponentActivity() {
                                         putExtra(Keys.USER_NICKNAME, nickname)
                                         putExtra(Keys.USER_MBTI, mbti)
                                     }
-                                    Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT)
+                                        .show()
                                     setResult(RESULT_OK, result)
                                     finish()
                                 }
 
                             } else {
-                                scope.launch {
+                                lifecycleScope.launch {
                                     snackbarHostState.showSnackbar(message = errorMessage)
                                 }
                             }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,25 +29,25 @@ fun SignInRoute(
     paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions,
     password: String,
     onPasswordChanged: (String) -> Unit,
     isPasswordVisible: Boolean,
     onIconClick: () -> Unit,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     SignInScreen(
         paddingValues = paddingValues,
         userId = userId,
         onUserIdChanged = onUserIdChanged,
+        keyboardActions = keyboardActions,
         password = password,
         onPasswordChanged = onPasswordChanged,
         isPasswordVisible = isPasswordVisible,
         onIconClick = onIconClick,
         onSignInClick = onSignInClick,
-        onSignUpClick = onSignUpClick,
-        modifier = modifier
+        onSignUpClick = onSignUpClick
     )
 }
 
@@ -55,6 +56,7 @@ private fun SignInScreen(
     paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions,
     password: String,
     onPasswordChanged: (String) -> Unit,
     isPasswordVisible: Boolean,
@@ -91,7 +93,8 @@ private fun SignInScreen(
             value = userId,
             onValueChanged = onUserIdChanged,
             placeholder = "아이디를 입력해주세요",
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
+            keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.height(25.dp))
@@ -107,6 +110,7 @@ private fun SignInScreen(
             onPasswordChanged = onPasswordChanged,
             onIconClick = onIconClick,
             imeAction = ImeAction.Done,
+            keyboardActions = keyboardActions,
             isPasswordVisible = isPasswordVisible
         )
 
@@ -122,7 +126,7 @@ private fun SignInScreen(
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = "회원가입하기",
                 modifier = Modifier

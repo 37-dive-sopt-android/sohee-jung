@@ -1,5 +1,6 @@
 package com.sopt.dive.core.designsystem.component.textfield
 
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ fun DiveSoptPasswordTextField(
     onIconClick: () -> Unit,
     modifier: Modifier = Modifier,
     imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     isPasswordVisible: Boolean = true
 ) {
     val iconId = if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
@@ -30,6 +32,7 @@ fun DiveSoptPasswordTextField(
         placeholder = "비밀번호를 입력하세요",
         keyboardType = KeyboardType.Password,
         imeAction = imeAction,
+        keyboardActions = keyboardActions,
         visualTransformation = if (isPasswordVisible) {
             VisualTransformation.None
         } else {

@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +28,7 @@ fun SignUpRoute(
     paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions,
     password: String,
     onPasswordChanged: (String) -> Unit,
     isPasswordVisible: Boolean,
@@ -35,12 +38,12 @@ fun SignUpRoute(
     mbti: String,
     onMbtiChanged: (String) -> Unit,
     onSignUpClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     SignUpScreen(
         paddingValues = paddingValues,
         userId = userId,
         onUserIdChanged = onUserIdChanged,
+        keyboardActions = keyboardActions,
         password = password,
         onPasswordChanged = onPasswordChanged,
         isPasswordVisible = isPasswordVisible,
@@ -49,8 +52,7 @@ fun SignUpRoute(
         onNicknameChanged = onNicknameChanged,
         mbti = mbti,
         onMbtiChanged = onMbtiChanged,
-        onSignUpClick = onSignUpClick,
-        modifier = modifier
+        onSignUpClick = onSignUpClick
     )
 }
 
@@ -59,6 +61,7 @@ private fun SignUpScreen(
     paddingValues: PaddingValues,
     userId: String,
     onUserIdChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions,
     password: String,
     onPasswordChanged: (String) -> Unit,
     isPasswordVisible: Boolean,
@@ -92,7 +95,8 @@ private fun SignUpScreen(
             userInfoInputSection = "ID",
             userInfoInputDescription = userId,
             onUserInfoInputChanged = onUserIdChanged,
-            placeholder = "아이디를 입력해주세요"
+            placeholder = "아이디를 입력해주세요",
+            keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -107,7 +111,8 @@ private fun SignUpScreen(
             password = password,
             onPasswordChanged = onPasswordChanged,
             onIconClick = onIconClick,
-            isPasswordVisible = isPasswordVisible
+            isPasswordVisible = isPasswordVisible,
+            keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -116,7 +121,8 @@ private fun SignUpScreen(
             userInfoInputSection = "NICKNAME",
             userInfoInputDescription = nickname,
             onUserInfoInputChanged = onNicknameChanged,
-            placeholder = "닉네임을 입력해주세요"
+            placeholder = "닉네임을 입력해주세요",
+            keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -126,7 +132,8 @@ private fun SignUpScreen(
             userInfoInputDescription = mbti,
             onUserInfoInputChanged = onMbtiChanged,
             placeholder = "엠비티아이를 입력해주세요",
-            imeAction = ImeAction.Done
+            imeAction = ImeAction.Done,
+            keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -145,7 +152,8 @@ private fun UserInfoInput(
     onUserInfoInputChanged: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
-    imeAction: ImeAction = ImeAction.Next
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -162,7 +170,8 @@ private fun UserInfoInput(
             value = userInfoInputDescription,
             onValueChanged = onUserInfoInputChanged,
             placeholder = placeholder,
-            imeAction = imeAction
+            imeAction = imeAction,
+            keyboardActions = keyboardActions
         )
     }
 }

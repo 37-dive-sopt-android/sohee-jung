@@ -12,19 +12,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,24 +31,21 @@ fun DiveSoptTextField(
     onValueChanged: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() },
+    focusRequester: FocusRequester = FocusRequester(),
     keyboardType: KeyboardType = KeyboardType.Unspecified,
     imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     maxLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable () -> Unit = {}
 ) {
-    var isFocused by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
-
     BasicTextField(
         value = value,
         onValueChange = { newValue ->
             onValueChanged(newValue)
         },
         modifier = modifier
-            .focusRequester(focusRequester = focusRequester)
-            .onFocusChanged { isFocused = it.isFocused },
+            .focusRequester(focusRequester = focusRequester),
         textStyle = TextStyle(
             color = Color.Black,
             fontSize = 22.sp
@@ -64,21 +54,7 @@ fun DiveSoptTextField(
             keyboardType = keyboardType,
             imeAction = imeAction
         ),
-        keyboardActions = when (imeAction) {
-            ImeAction.Next -> {
-                KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                )
-            }
-
-            ImeAction.Done -> {
-                KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
-                )
-            }
-
-            else -> KeyboardActions.Default
-        },
+        keyboardActions = keyboardActions,
         maxLines = maxLines,
         visualTransformation = visualTransformation,
         cursorBrush = SolidColor(Color.Gray),
