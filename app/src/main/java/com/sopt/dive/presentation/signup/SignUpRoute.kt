@@ -1,0 +1,177 @@
+package com.sopt.dive.presentation.signup
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
+import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
+import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
+import com.sopt.dive.core.util.conditionalImePadding
+
+@Composable
+fun SignUpRoute(
+    paddingValues: PaddingValues,
+    userId: String,
+    onUserIdChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions,
+    password: String,
+    onPasswordChanged: (String) -> Unit,
+    isPasswordVisible: Boolean,
+    onIconClick: () -> Unit,
+    nickname: String,
+    onNicknameChanged: (String) -> Unit,
+    mbti: String,
+    onMbtiChanged: (String) -> Unit,
+    onSignUpClick: () -> Unit,
+) {
+    SignUpScreen(
+        paddingValues = paddingValues,
+        userId = userId,
+        onUserIdChanged = onUserIdChanged,
+        keyboardActions = keyboardActions,
+        password = password,
+        onPasswordChanged = onPasswordChanged,
+        isPasswordVisible = isPasswordVisible,
+        onIconClick = onIconClick,
+        nickname = nickname,
+        onNicknameChanged = onNicknameChanged,
+        mbti = mbti,
+        onMbtiChanged = onMbtiChanged,
+        onSignUpClick = onSignUpClick
+    )
+}
+
+@Composable
+private fun SignUpScreen(
+    paddingValues: PaddingValues,
+    userId: String,
+    onUserIdChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions,
+    password: String,
+    onPasswordChanged: (String) -> Unit,
+    isPasswordVisible: Boolean,
+    onIconClick: () -> Unit,
+    nickname: String,
+    onNicknameChanged: (String) -> Unit,
+    mbti: String,
+    onMbtiChanged: (String) -> Unit,
+    onSignUpClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp)
+            .padding(top = paddingValues.calculateTopPadding() + 30.dp)
+            .conditionalImePadding(bottom = 30.dp)
+    ) {
+        Text(
+            text = "SIGN UP",
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.Black,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        UserInfoInput(
+            userInfoInputSection = "ID",
+            userInfoInputDescription = userId,
+            onUserInfoInputChanged = onUserIdChanged,
+            placeholder = "아이디를 입력해주세요",
+            keyboardActions = keyboardActions
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+            text = "PW",
+            color = Color.Black,
+            fontSize = 30.sp
+        )
+
+        DiveSoptPasswordTextField(
+            password = password,
+            onPasswordChanged = onPasswordChanged,
+            onIconClick = onIconClick,
+            isPasswordVisible = isPasswordVisible,
+            keyboardActions = keyboardActions
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        UserInfoInput(
+            userInfoInputSection = "NICKNAME",
+            userInfoInputDescription = nickname,
+            onUserInfoInputChanged = onNicknameChanged,
+            placeholder = "닉네임을 입력해주세요",
+            keyboardActions = keyboardActions
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        UserInfoInput(
+            userInfoInputSection = "MBTI",
+            userInfoInputDescription = mbti,
+            onUserInfoInputChanged = onMbtiChanged,
+            placeholder = "엠비티아이를 입력해주세요",
+            imeAction = ImeAction.Done,
+            keyboardActions = keyboardActions
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        DiveSoptButton(
+            buttonText = "회원가입하기",
+            onButtonClick = onSignUpClick
+        )
+    }
+}
+
+@Composable
+private fun UserInfoInput(
+    userInfoInputSection: String,
+    userInfoInputDescription: String,
+    onUserInfoInputChanged: (String) -> Unit,
+    placeholder: String,
+    modifier: Modifier = Modifier,
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = userInfoInputSection,
+            color = Color.Black,
+            fontSize = 30.sp
+        )
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        DiveSoptTextField(
+            value = userInfoInputDescription,
+            onValueChanged = onUserInfoInputChanged,
+            placeholder = placeholder,
+            imeAction = imeAction,
+            keyboardActions = keyboardActions
+        )
+    }
+}
