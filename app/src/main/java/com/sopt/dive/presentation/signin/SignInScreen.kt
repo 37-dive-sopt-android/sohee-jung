@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 fun SignInRoute(
     paddingValues: PaddingValues,
     onSignInClick: () -> Unit,
-    onSignUpClick: () -> Unit,
+    onSignUpClick: () -> Unit
 ) {
     val context = LocalContext.current
     val prefs = remember { UserPrefs(context) }
@@ -72,7 +72,7 @@ fun SignInRoute(
                     prefs.setLoggedIn(isLoggedIn = true)
                     onSignInClick()
                 } else {
-                        snackbar.showSnackbar("로그인에 실패했습니다.")
+                    snackbar.showSnackbar("로그인에 실패했습니다.")
                 }
             }
         },
@@ -92,7 +92,7 @@ private fun SignInScreen(
     onIconClick: () -> Unit,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier

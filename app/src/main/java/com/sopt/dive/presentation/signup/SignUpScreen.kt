@@ -30,16 +30,16 @@ import com.sopt.dive.core.designsystem.LocalAppSnackbarHostState
 import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
 import com.sopt.dive.core.util.conditionalImePadding
-import com.sopt.dive.core.util.validateErrorMessage
-import com.sopt.dive.data.UserInfo
 import com.sopt.dive.data.UserPrefs
+import com.sopt.dive.domain.CheckSignUpResult
+import com.sopt.dive.domain.Result
 import com.sopt.dive.presentation.signup.component.UserInfoInput
 import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpRoute(
     onSignUpClick: () -> Unit,
-    paddingValues: PaddingValues,
+    paddingValues: PaddingValues
 ) {
     val context = LocalContext.current.applicationContext
     val prefs = remember { UserPrefs(context) }
@@ -70,29 +70,15 @@ fun SignUpRoute(
         mbti = mbti,
         onMbtiChanged = { mbti = it },
         onSignUpClick = {
-            val errorMessage = validateErrorMessage(
-                userId = userId,
-                password = password,
-                nickname = nickname,
-                mbti = mbti
-            )
-            if (errorMessage == null) {
-                scope.launch {
-                    prefs.saveProfile(
-                        profile = UserInfo(
-                            userId = userId,
-                            password = password,
-                            nickname = nickname,
-                            mbti = mbti,
-                            isLoggedIn = false
-                        )
-                    )
-                    Toast.makeText(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT).show()
-                    onSignUpClick()
-                }
-            } else {
-                errorMessage?.let { msg ->
-                    scope.launch { snackbar.showSnackbar(msg) }
+            scope.launch {
+                when (val r= CheckSignUpResult(prefs = prefs, userId = userId, password = password, nickname = nickname, mbti = mbti)) {
+                    is Result.Success -> {
+                        Toast.makeText(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT).show()
+                        onSignUpClick()
+                    }
+                    is Result.Failure -> {
+                        snackbar.showSnackbar(r.message)
+                    }
                 }
             }
         },
@@ -115,7 +101,7 @@ private fun SignUpScreen(
     mbti: String,
     onMbtiChanged: (String) -> Unit,
     onSignUpClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
