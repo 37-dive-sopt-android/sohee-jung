@@ -85,7 +85,7 @@ fun HomeRoute(
 }
 
 @Composable
-fun HomeScreen(
+private fun HomeScreen(
     paddingValues: PaddingValues,
     userFriends: ImmutableList<UserFriendsInfo>,
     modifier: Modifier = Modifier

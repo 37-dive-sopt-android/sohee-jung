@@ -58,7 +58,7 @@ fun MyRoute(
 }
 
 @Composable
-fun MyScreen(
+private fun MyScreen(
     nickname: String,
     userId: String,
     password: String,

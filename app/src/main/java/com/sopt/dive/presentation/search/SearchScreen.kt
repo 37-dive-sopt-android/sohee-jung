@@ -18,7 +18,7 @@ fun SearchRoute(
 }
 
 @Composable
-fun SearchScreen(
+private fun SearchScreen(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ){

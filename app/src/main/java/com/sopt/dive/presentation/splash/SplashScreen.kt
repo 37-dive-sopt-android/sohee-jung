@@ -42,7 +42,7 @@ fun SplashRoute(
 }
 
 @Composable
-fun SplashScreen(
+private fun SplashScreen(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
