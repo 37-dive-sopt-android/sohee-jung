@@ -1,6 +1,5 @@
 package com.sopt.dive.presentation.splash
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize

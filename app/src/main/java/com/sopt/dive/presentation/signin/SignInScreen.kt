@@ -1,6 +1,5 @@
 package com.sopt.dive.presentation.signin
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,7 +35,6 @@ import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
 import com.sopt.dive.core.util.conditionalImePadding
 import com.sopt.dive.data.UserInfo
 import com.sopt.dive.data.UserPrefs
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Composable
@@ -72,8 +70,6 @@ fun SignInRoute(
             scope.launch {
                 if (!userId.isBlank() && !password.isBlank() && userId == profile.userId && password == profile.password) {
                     prefs.setLoggedIn(isLoggedIn = true)
-                    val now = prefs.profileFlow.first()
-                    Log.d("SignIn", "setLoggedIn 완료. isLoggedIn=${now.isLoggedIn}, userId=${now.userId}")
                     onSignInClick()
                 } else {
                     snackbar.showSnackbar("로그인에 실패했습니다.")
