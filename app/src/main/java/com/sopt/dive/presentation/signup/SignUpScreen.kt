@@ -1,5 +1,6 @@
 package com.sopt.dive.presentation.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -10,49 +11,92 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sopt.dive.core.designsystem.LocalAppSnackbarHostState
 import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
-import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
 import com.sopt.dive.core.util.conditionalImePadding
+import com.sopt.dive.core.util.validateErrorMessage
+import com.sopt.dive.data.UserInfo
+import com.sopt.dive.data.UserPrefs
+import com.sopt.dive.presentation.signup.component.UserInfoInput
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpRoute(
-    paddingValues: PaddingValues,
-    userId: String,
-    onUserIdChanged: (String) -> Unit,
-    keyboardActions: KeyboardActions,
-    password: String,
-    onPasswordChanged: (String) -> Unit,
-    isPasswordVisible: Boolean,
-    onIconClick: () -> Unit,
-    nickname: String,
-    onNicknameChanged: (String) -> Unit,
-    mbti: String,
-    onMbtiChanged: (String) -> Unit,
     onSignUpClick: () -> Unit,
+    paddingValues: PaddingValues,
 ) {
+    val context = LocalContext.current.applicationContext
+    val prefs = remember { UserPrefs(context) }
+    val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
+    val snackbar = LocalAppSnackbarHostState.current
+
+    var userId by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var nickname by remember { mutableStateOf("") }
+    var mbti by remember { mutableStateOf("") }
+
+    var isPasswordVisible by remember { mutableStateOf(false) }
+
     SignUpScreen(
-        paddingValues = paddingValues,
         userId = userId,
-        onUserIdChanged = onUserIdChanged,
-        keyboardActions = keyboardActions,
+        onUserIdChanged = { userId = it },
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() },
+            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+        ),
         password = password,
-        onPasswordChanged = onPasswordChanged,
+        onPasswordChanged = { password = it },
         isPasswordVisible = isPasswordVisible,
-        onIconClick = onIconClick,
+        onIconClick = { isPasswordVisible = !isPasswordVisible },
         nickname = nickname,
-        onNicknameChanged = onNicknameChanged,
+        onNicknameChanged = { nickname = it },
         mbti = mbti,
-        onMbtiChanged = onMbtiChanged,
-        onSignUpClick = onSignUpClick
+        onMbtiChanged = { mbti = it },
+        onSignUpClick = {
+            val errorMessage = validateErrorMessage(
+                userId = userId,
+                password = password,
+                nickname = nickname,
+                mbti = mbti
+            )
+            if (errorMessage == null) {
+                scope.launch {
+                    prefs.saveProfile(
+                        profile = UserInfo(
+                            userId = userId,
+                            password = password,
+                            nickname = nickname,
+                            mbti = mbti,
+                            isLoggedIn = false
+                        )
+                    )
+                    Toast.makeText(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT).show()
+                    onSignUpClick()
+                }
+            } else {
+                errorMessage?.let { msg ->
+                    scope.launch { snackbar.showSnackbar(msg) }
+                }
+            }
+        },
+        paddingValues = paddingValues
     )
 }
 
@@ -141,37 +185,6 @@ private fun SignUpScreen(
         DiveSoptButton(
             buttonText = "회원가입하기",
             onButtonClick = onSignUpClick
-        )
-    }
-}
-
-@Composable
-private fun UserInfoInput(
-    userInfoInputSection: String,
-    userInfoInputDescription: String,
-    onUserInfoInputChanged: (String) -> Unit,
-    placeholder: String,
-    modifier: Modifier = Modifier,
-    imeAction: ImeAction = ImeAction.Next,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
-) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = userInfoInputSection,
-            color = Color.Black,
-            fontSize = 30.sp
-        )
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        DiveSoptTextField(
-            value = userInfoInputDescription,
-            onValueChanged = onUserInfoInputChanged,
-            placeholder = placeholder,
-            imeAction = imeAction,
-            keyboardActions = keyboardActions
         )
     }
 }

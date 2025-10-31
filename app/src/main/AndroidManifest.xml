@@ -13,19 +13,9 @@
         android:theme="@style/Theme.Dive"
         tools:targetApi="31" >
         <activity
-            android:name=".presentation.signup.SignUpActivity"
-            android:exported="false"
-            android:label="@string/title_activity_sign_up"
-            android:theme="@style/Theme.Dive" />
-        <activity
             android:name=".presentation.main.MainActivity"
-            android:exported="false"
-            android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Dive" />
-        <activity
-            android:name=".presentation.signin.SignInActivity"
             android:exported="true"
-            android:label="@string/title_activity_sign_in"
+            android:label="@string/title_activity_main"
             android:theme="@style/Theme.Dive" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

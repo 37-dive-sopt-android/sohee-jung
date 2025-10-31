@@ -11,42 +11,71 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sopt.dive.core.designsystem.LocalAppSnackbarHostState
 import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
 import com.sopt.dive.core.util.conditionalImePadding
+import com.sopt.dive.data.UserInfo
+import com.sopt.dive.data.UserPrefs
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignInRoute(
     paddingValues: PaddingValues,
-    userId: String,
-    onUserIdChanged: (String) -> Unit,
-    keyboardActions: KeyboardActions,
-    password: String,
-    onPasswordChanged: (String) -> Unit,
-    isPasswordVisible: Boolean,
-    onIconClick: () -> Unit,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val prefs = remember { UserPrefs(context) }
+    val profile by prefs.profileFlow.collectAsStateWithLifecycle(UserInfo.EMPTY)
+    val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
+    val snackbar = LocalAppSnackbarHostState.current
+
+    var userId by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
+
     SignInScreen(
         paddingValues = paddingValues,
         userId = userId,
-        onUserIdChanged = onUserIdChanged,
-        keyboardActions = keyboardActions,
+        onUserIdChanged = { userId = it },
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() },
+            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+        ),
         password = password,
-        onPasswordChanged = onPasswordChanged,
+        onPasswordChanged = { password = it },
         isPasswordVisible = isPasswordVisible,
-        onIconClick = onIconClick,
-        onSignInClick = onSignInClick,
+        onIconClick = { isPasswordVisible = !isPasswordVisible },
+        onSignInClick = {
+            scope.launch {
+                if (!userId.isBlank()&& !password.isBlank() && userId == profile.userId && password == profile.password) {
+                    prefs.setLoggedIn(isLoggedIn = true)
+                    onSignInClick()
+                } else {
+                        snackbar.showSnackbar("로그인에 실패했습니다.")
+                }
+            }
+        },
         onSignUpClick = onSignUpClick
     )
 }
