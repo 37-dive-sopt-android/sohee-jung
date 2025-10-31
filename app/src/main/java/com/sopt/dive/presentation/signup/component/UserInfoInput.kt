@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
 
-@Composable fun UserInfoInput(
+@Composable
+fun UserInfoInput(
     userInfoInputSection: String,
     userInfoInputDescription: String,
     onUserInfoInputChanged: (String) -> Unit,
