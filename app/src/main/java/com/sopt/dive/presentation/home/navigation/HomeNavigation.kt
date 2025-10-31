@@ -17,7 +17,9 @@ fun NavGraphBuilder.homeGraph(
     paddingValues: PaddingValues
 ) {
     composable<Home> {
-        HomeRoute()
+        HomeRoute(
+            paddingValues = paddingValues
+        )
     }
 }
 
