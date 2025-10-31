@@ -1,5 +1,6 @@
 package com.sopt.dive.presentation.splash
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,14 +23,20 @@ fun SplashRoute(
     onNavigateToHome: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     paddingValues: PaddingValues
-){
+) {
     val appCtx = LocalContext.current.applicationContext
     val prefs = remember { UserPrefs(appCtx) }
     val profile by prefs.profileFlow.collectAsStateWithLifecycle(initialValue = UserInfo.EMPTY)
+    var navigated by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        if (profile.isLoggedIn) onNavigateToHome() else onNavigateToSignIn()
+    LaunchedEffect(profile) {
+        if (navigated) return@LaunchedEffect
+        if (profile != UserInfo.EMPTY) {
+            if (profile.isLoggedIn) onNavigateToHome() else onNavigateToSignIn()
+            navigated = true
+        }
     }
+
     SplashScreen(
         paddingValues = paddingValues
     )
@@ -37,7 +46,7 @@ fun SplashRoute(
 fun SplashScreen(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
