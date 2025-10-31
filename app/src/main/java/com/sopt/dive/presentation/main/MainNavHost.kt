@@ -37,7 +37,8 @@ fun MainNavHost(
         }
 
         val keepStackNavOptions = navOptions {
-
+            launchSingleTop = true
+            restoreState = true
         }
 
         splashGraph(
