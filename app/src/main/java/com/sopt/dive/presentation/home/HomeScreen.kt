@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sopt.dive.R
-import com.sopt.dive.data.UserFriendsInfo
 import com.sopt.dive.presentation.home.component.UserFriendsItem
+import com.sopt.dive.presentation.home.model.Birthday
+import com.sopt.dive.presentation.home.model.SubContent
+import com.sopt.dive.presentation.home.model.UserFriendsInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -22,59 +24,74 @@ fun HomeRoute(
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
             friendName = "가나다",
-            friendSaying = "안녕"
+            friendSaying = "안녕",
+            subContent = SubContent.None
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
             friendName = "나다라",
-            friendSaying = "안녕"
+            friendSaying = "안녕",
+            birthday = Birthday.BIRTHDAY,
+            subContent = SubContent.Birthday
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
             friendName = "라마바",
-            friendSaying = "안녕"
-        ), UserFriendsInfo(
+            subContent = SubContent.Song(songName = "너에게 간다", singer = "윤종신")
+        ),
+        UserFriendsInfo(
             friendImage = R.drawable.img_profile,
             friendName = "사아자",
-            friendSaying = "안녕"
-        ), UserFriendsInfo(
+            friendSaying = "안녕",
+            subContent = SubContent.Song(songName = "너에게 간다", singer = "윤종신")
+        ),
+        UserFriendsInfo(
             friendImage = R.drawable.img_profile,
             friendName = "ㄱㄴㄷ",
-            friendSaying = "안녕"
-        ), UserFriendsInfo(
+            birthday = Birthday.BIRTHDAY,
+            subContent = SubContent.Birthday
+        ),
+        UserFriendsInfo(
             friendImage = R.drawable.img_profile,
             friendName = "ㄹㅁㅂ",
-            friendSaying = "안녕"
+            friendSaying = "안녕",
+            subContent = SubContent.None
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
-            friendName = "abc",
-            friendSaying = "안녕"
+            friendName = "ㅂㅅㅇ",
+            friendSaying = "안녕",
+            subContent = SubContent.None
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
-            friendName = "def",
-            friendSaying = "안녕"
+            friendName = "기니디",
+            friendSaying = "안녕",
+            birthday = Birthday.BIRTHDAY,
+            subContent = SubContent.Birthday
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
-            friendName = "ghi",
-            friendSaying = "안녕"
+            friendName = "리미비",
+            subContent = SubContent.Song(songName = "너에게 간다", singer = "윤종신")
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
-            friendName = "jkl",
-            friendSaying = "안녕"
+            friendName = "지치키",
+            friendSaying = "안녕",
+            subContent = SubContent.Song(songName = "너에게 간다", singer = "윤종신")
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
-            friendName = "mno",
-            friendSaying = "안녕"
+            friendName = "ㅋㅋㅋ",
+            birthday = Birthday.BIRTHDAY,
+            subContent = SubContent.Birthday
         ),
         UserFriendsInfo(
             friendImage = R.drawable.img_profile,
-            friendName = "pqr",
-            friendSaying = "안녕"
+            friendName = "ㅎㅎㅎ",
+            friendSaying = "안녕",
+            subContent = SubContent.None
         )
     )
 
