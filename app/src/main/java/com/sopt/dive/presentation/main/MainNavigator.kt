@@ -9,7 +9,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.sopt.dive.presentation.home.navigation.Home
 import com.sopt.dive.presentation.home.navigation.navigateToHome
 import com.sopt.dive.presentation.my.navigation.navigateToMy
 import com.sopt.dive.presentation.search.navigation.navigateToSearch
