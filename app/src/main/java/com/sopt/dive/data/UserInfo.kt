@@ -9,4 +9,8 @@ data class UserInfo(
     val nickname: String,
     val mbti: String,
     val isLoggedIn: Boolean
-)
+){
+    companion object {
+        val EMPTY = UserInfo("", "", "", "", false)
+    }
+}
