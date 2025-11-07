@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class UserFriendsInfo(
+data class HomeUiState(
     @DrawableRes val friendImage: Int,
     val friendName: String,
     val friendSaying: String? = null,

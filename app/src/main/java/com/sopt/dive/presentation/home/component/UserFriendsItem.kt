@@ -22,12 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sopt.dive.presentation.home.model.Birthday
+import com.sopt.dive.presentation.home.model.HomeUiState
 import com.sopt.dive.presentation.home.model.Saying
-import com.sopt.dive.presentation.home.model.UserFriendsInfo
 
 @Composable
 fun UserFriendsItem(
-    userFriends: UserFriendsInfo,
+    userFriends: HomeUiState,
     modifier: Modifier = Modifier
 ) {
     val birthdayIcon = remember(userFriends.birthday) {
