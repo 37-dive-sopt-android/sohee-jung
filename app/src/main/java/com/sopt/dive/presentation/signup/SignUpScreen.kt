@@ -1,5 +1,6 @@
 package com.sopt.dive.presentation.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -32,19 +34,22 @@ import com.sopt.dive.presentation.signup.component.UserInfoInput
 fun SignUpRoute(
     navigateToSignIn: () -> Unit,
     paddingValues: PaddingValues,
-    viewModel: SignUpViewModel = viewModel()
 ) {
+    val viewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
             when (sideEffect) {
                 is SignUpSideEffect.NavigateToSignIn -> navigateToSignIn()
+                is SignUpSideEffect.ShowToast -> {
+                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
-
 
     SignUpScreen(
         uiState = uiState,
@@ -96,8 +101,8 @@ private fun SignUpScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         UserInfoInput(
-            userInfoInputSection = "ID",
-            userInfoInputDescription = uiState.userId,
+            userInfoInputSection = "USERNAME",
+            userInfoInputDescription = uiState.username,
             onUserInfoInputChanged = onUserIdChanged,
             placeholder = "아이디를 입력해주세요",
             keyboardActions = keyboardActions

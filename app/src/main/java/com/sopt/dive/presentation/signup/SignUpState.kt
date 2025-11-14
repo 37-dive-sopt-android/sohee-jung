@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class SignUpState(
-    val userId: String = "",
+    val username: String = "",
     val password: String = "",
     val name: String = "",
     val email: String = "",
@@ -12,6 +12,7 @@ data class SignUpState(
     val isPasswordVisible: Boolean = false
 )
 
-sealed interface SignUpSideEffect{
+sealed interface SignUpSideEffect {
     data object NavigateToSignIn : SignUpSideEffect
+    data class ShowToast(val message: String) : SignUpSideEffect
 }

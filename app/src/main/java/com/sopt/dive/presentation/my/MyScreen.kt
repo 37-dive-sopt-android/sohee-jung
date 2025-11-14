@@ -32,8 +32,11 @@ import com.sopt.dive.presentation.my.component.UserInfoContent
 fun MyRoute(
     paddingValues: PaddingValues,
     onNavigateToSignIn: () -> Unit,
-    viewModel: MyViewModel = viewModel()
 ) {
+    val viewModel: MyViewModel = viewModel(
+        factory = MyViewModelFactory()
+    )
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {

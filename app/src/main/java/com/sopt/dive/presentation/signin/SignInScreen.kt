@@ -35,8 +35,8 @@ fun SignInRoute(
     paddingValues: PaddingValues,
     navigateToSignUp: () -> Unit,
     navigateToHome: () -> Unit,
-    viewModel: SignInViewModel = viewModel()
 ) {
+    val viewModel: SignInViewModel = viewModel(factory = SignInViewModelFactory())
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
 
@@ -102,7 +102,7 @@ private fun SignInScreen(
         )
 
         DiveSoptTextField(
-            value = uiState.userId,
+            value = uiState.username,
             onValueChanged = onUserIdChanged,
             placeholder = "아이디를 입력해주세요",
             imeAction = ImeAction.Next,

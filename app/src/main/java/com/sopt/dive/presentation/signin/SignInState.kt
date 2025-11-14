@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class SignInState(
-    val userId: String = "",
+    val username: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false
 )

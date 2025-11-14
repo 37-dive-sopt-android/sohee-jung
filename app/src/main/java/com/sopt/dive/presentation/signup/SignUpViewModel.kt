@@ -1,6 +1,9 @@
 package com.sopt.dive.presentation.signup
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sopt.dive.data.auth.dto.request.SignUpRequestDto
+import com.sopt.dive.data.auth.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -8,18 +11,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel(
+    private val authRepository: AuthRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SignUpState())
     val uiState: StateFlow<SignUpState> = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<SignUpSideEffect>()
     val sideEffect: SharedFlow<SignUpSideEffect> = _sideEffect.asSharedFlow()
 
-
-    fun updateUserId(userId: String) {
+    fun updateUserId(username: String) {
         _uiState.update {
-            it.copy(userId = userId)
+            it.copy(username = username)
         }
     }
 
@@ -48,27 +53,35 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun onIconClicked(){
+    fun onIconClicked() {
         _uiState.update {
             it.copy(isPasswordVisible = !it.isPasswordVisible)
         }
     }
 
-    fun onSignUpClicked(){
+    fun onSignUpClicked() {
+        val username = uiState.value.username
+        val password = uiState.value.password
+        val name = uiState.value.name
+        val email = uiState.value.email
+        val age = uiState.value.age
 
+        viewModelScope.launch {
+            val result = authRepository.postSignUp(
+                SignUpRequestDto(
+                    username = username,
+                    password = password,
+                    name = name,
+                    email = email,
+                    age = age!!
+                )
+            )
+
+            if (result.isSuccess) {
+                _sideEffect.emit(SignUpSideEffect.NavigateToSignIn)
+            } else {
+                _sideEffect.emit(SignUpSideEffect.ShowToast("회원가입에 실패했습니다."))
+            }
+        }
     }
-
-//    {
-//        scope.launch {
-//            when (val r= CheckSignUpResult(prefs = prefs, userId = userId, password = password, nickname = nickname, mbti = mbti)) {
-//                is com.sopt.dive.domain.Result.Success -> {
-//                    Toast.makeText(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT).show()
-//                    onSignUpClick()
-//                }
-//                is Result.Failure -> {
-//                    snackbar.showSnackbar(r.message)
-//                }
-//            }
-//        }
-//    }
 }

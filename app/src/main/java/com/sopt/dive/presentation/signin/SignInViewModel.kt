@@ -2,7 +2,9 @@ package com.sopt.dive.presentation.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sopt.dive.presentation.signup.SignUpSideEffect
+import com.sopt.dive.data.UserPrefs
+import com.sopt.dive.data.auth.dto.request.SignInRequestDto
+import com.sopt.dive.data.auth.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,16 +14,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SignInViewModel : ViewModel() {
+class SignInViewModel(
+    private val authRepository: AuthRepository,
+    private val userPrefs: UserPrefs
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SignInState())
     val uiState: StateFlow<SignInState> = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<SignInSideEffect>()
     val sideEffect: SharedFlow<SignInSideEffect> = _sideEffect.asSharedFlow()
 
-    fun updateUserId(userId: String) {
+    fun updateUserId(username: String) {
         _uiState.update {
-            it.copy(userId = userId)
+            it.copy(username = username)
         }
     }
 
@@ -31,27 +36,38 @@ class SignInViewModel : ViewModel() {
         }
     }
 
-    fun onIconClicked(){
+    fun onIconClicked() {
         _uiState.update {
             it.copy(isPasswordVisible = !it.isPasswordVisible)
         }
     }
 
-    fun onSignInClicked(){
+    fun onSignInClicked() {
+        val username = uiState.value.username
+        val password = uiState.value.password
 
+        viewModelScope.launch {
+            val result = authRepository.postSignIn(
+                SignInRequestDto(
+                    username = username,
+                    password = password
+                )
+            )
+
+            result.onSuccess { response ->
+                val userId = response.data.userId
+
+                userPrefs.setUserId(userId)
+                userPrefs.setLoggedIn(true)
+
+                _sideEffect.emit(SignInSideEffect.NavigateToHome)
+            }.onFailure {
+
+            }
+        }
     }
-//    {
-//        scope.launch {
-//            if (!userId.isBlank() && !password.isBlank() && userId == profile.userId && password == profile.password) {
-//                prefs.setLoggedIn(isLoggedIn = true)
-//                onSignInClick()
-//            } else {
-//                snackbar.showSnackbar("로그인에 실패했습니다.")
-//            }
-//        }
 
-
-    fun onSignUpClicked(){
+    fun onSignUpClicked() {
         viewModelScope.launch {
             _sideEffect.emit(SignInSideEffect.NavigateToSignUp)
         }
