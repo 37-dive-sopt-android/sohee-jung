@@ -15,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sopt.dive.R
 import com.sopt.dive.core.util.noRippleClickable
+import com.sopt.dive.data.UserPrefs
 import com.sopt.dive.presentation.my.component.UserInfoContent
 
 @Composable
@@ -33,10 +36,9 @@ fun MyRoute(
     paddingValues: PaddingValues,
     onNavigateToSignIn: () -> Unit,
 ) {
-    val viewModel: MyViewModel = viewModel(
-        factory = MyViewModelFactory()
-    )
-
+    val context = LocalContext.current
+    val userPrefs = remember { UserPrefs(context) }
+    val viewModel: MyViewModel = viewModel(factory = MyViewModelFactory(userPrefs))
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {

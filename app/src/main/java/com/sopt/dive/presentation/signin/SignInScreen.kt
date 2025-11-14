@@ -13,10 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -29,6 +31,7 @@ import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptTextField
 import com.sopt.dive.core.util.conditionalImePadding
+import com.sopt.dive.data.UserPrefs
 
 @Composable
 fun SignInRoute(
@@ -36,14 +39,16 @@ fun SignInRoute(
     navigateToSignUp: () -> Unit,
     navigateToHome: () -> Unit,
 ) {
-    val viewModel: SignInViewModel = viewModel(factory = SignInViewModelFactory())
+    val context = LocalContext.current
+    val userPrefs = remember { UserPrefs(context) }
+    val viewModel: SignInViewModel = viewModel(factory = SignInViewModelFactory(userPrefs))
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
 
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
-            when(sideEffect) {
+            when (sideEffect) {
                 is SignInSideEffect.NavigateToSignUp -> navigateToSignUp()
                 is SignInSideEffect.NavigateToHome -> navigateToHome()
             }
