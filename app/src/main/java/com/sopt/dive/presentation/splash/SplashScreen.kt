@@ -30,10 +30,19 @@ fun SplashRoute(
 
     LaunchedEffect(profile) {
         if (navigated) return@LaunchedEffect
-        if (profile != UserInfo.EMPTY) {
-            if (profile.isLoggedIn) onNavigateToHome() else onNavigateToSignIn()
+        if (profile == UserInfo.EMPTY) {
+            onNavigateToSignIn()
             navigated = true
+            return@LaunchedEffect
         }
+
+        if (profile.isLoggedIn) {
+            onNavigateToHome()
+        } else {
+            onNavigateToSignIn()
+        }
+
+        navigated = true
     }
 
     SplashScreen(

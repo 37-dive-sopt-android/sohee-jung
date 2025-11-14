@@ -11,11 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
@@ -26,80 +23,62 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sopt.dive.core.designsystem.LocalAppSnackbarHostState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sopt.dive.core.designsystem.component.button.DiveSoptButton
 import com.sopt.dive.core.designsystem.component.textfield.DiveSoptPasswordTextField
 import com.sopt.dive.core.util.conditionalImePadding
-import com.sopt.dive.data.UserPrefs
-import com.sopt.dive.domain.CheckSignUpResult
-import com.sopt.dive.domain.Result
 import com.sopt.dive.presentation.signup.component.UserInfoInput
-import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpRoute(
-    onSignUpClick: () -> Unit,
-    paddingValues: PaddingValues
+    navigateToSignIn: () -> Unit,
+    paddingValues: PaddingValues,
 ) {
-    val context = LocalContext.current.applicationContext
-    val prefs = remember { UserPrefs(context) }
+    val viewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
-    val scope = rememberCoroutineScope()
-    val snackbar = LocalAppSnackbarHostState.current
+    val context = LocalContext.current
 
-    var userId by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var nickname by remember { mutableStateOf("") }
-    var mbti by remember { mutableStateOf("") }
-
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { sideEffect ->
+            when (sideEffect) {
+                is SignUpSideEffect.NavigateToSignIn -> navigateToSignIn()
+                is SignUpSideEffect.ShowToast -> {
+                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     SignUpScreen(
-        userId = userId,
-        onUserIdChanged = { userId = it },
+        uiState = uiState,
+        onUserIdChanged = viewModel::updateUserId,
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() },
             onNext = { focusManager.moveFocus(FocusDirection.Next) }
         ),
-        password = password,
-        onPasswordChanged = { password = it },
-        isPasswordVisible = isPasswordVisible,
-        onIconClick = { isPasswordVisible = !isPasswordVisible },
-        nickname = nickname,
-        onNicknameChanged = { nickname = it },
-        mbti = mbti,
-        onMbtiChanged = { mbti = it },
-        onSignUpClick = {
-            scope.launch {
-                when (val r= CheckSignUpResult(prefs = prefs, userId = userId, password = password, nickname = nickname, mbti = mbti)) {
-                    is Result.Success -> {
-                        Toast.makeText(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT).show()
-                        onSignUpClick()
-                    }
-                    is Result.Failure -> {
-                        snackbar.showSnackbar(r.message)
-                    }
-                }
-            }
-        },
+        onPasswordChanged = viewModel::updatePassword,
+        onIconClick = viewModel::onIconClicked,
+        onNameChanged = viewModel::updateName,
+        onEmailChanged = viewModel::updateEmail,
+        onAgeChanged = viewModel::updateAge,
+        onSignUpClick = viewModel::onSignUpClicked,
         paddingValues = paddingValues
     )
 }
 
 @Composable
 private fun SignUpScreen(
+    uiState: SignUpState,
     paddingValues: PaddingValues,
-    userId: String,
     onUserIdChanged: (String) -> Unit,
     keyboardActions: KeyboardActions,
-    password: String,
     onPasswordChanged: (String) -> Unit,
-    isPasswordVisible: Boolean,
     onIconClick: () -> Unit,
-    nickname: String,
-    onNicknameChanged: (String) -> Unit,
-    mbti: String,
-    onMbtiChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onAgeChanged: (String) -> Unit,
     onSignUpClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -122,8 +101,8 @@ private fun SignUpScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         UserInfoInput(
-            userInfoInputSection = "ID",
-            userInfoInputDescription = userId,
+            userInfoInputSection = "USERNAME",
+            userInfoInputDescription = uiState.username,
             onUserInfoInputChanged = onUserIdChanged,
             placeholder = "아이디를 입력해주세요",
             keyboardActions = keyboardActions
@@ -138,30 +117,41 @@ private fun SignUpScreen(
         )
 
         DiveSoptPasswordTextField(
-            password = password,
+            password = uiState.password,
             onPasswordChanged = onPasswordChanged,
             onIconClick = onIconClick,
-            isPasswordVisible = isPasswordVisible,
+            isPasswordVisible = uiState.isPasswordVisible,
             keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.height(10.dp))
 
         UserInfoInput(
-            userInfoInputSection = "NICKNAME",
-            userInfoInputDescription = nickname,
-            onUserInfoInputChanged = onNicknameChanged,
-            placeholder = "닉네임을 입력해주세요",
+            userInfoInputSection = "NAME",
+            userInfoInputDescription = uiState.name,
+            onUserInfoInputChanged = onNameChanged,
+            placeholder = "이름을 입력해주세요",
             keyboardActions = keyboardActions
         )
 
         Spacer(modifier = Modifier.height(10.dp))
 
         UserInfoInput(
-            userInfoInputSection = "MBTI",
-            userInfoInputDescription = mbti,
-            onUserInfoInputChanged = onMbtiChanged,
-            placeholder = "엠비티아이를 입력해주세요",
+            userInfoInputSection = "EMAIL",
+            userInfoInputDescription = uiState.email,
+            onUserInfoInputChanged = onEmailChanged,
+            placeholder = "이메일을 입력해주세요",
+            imeAction = ImeAction.Done,
+            keyboardActions = keyboardActions
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        UserInfoInput(
+            userInfoInputSection = "AGE",
+            userInfoInputDescription = uiState.age.toString(),
+            onUserInfoInputChanged = onAgeChanged,
+            placeholder = "나이를 입력해주세요",
             imeAction = ImeAction.Done,
             keyboardActions = keyboardActions
         )

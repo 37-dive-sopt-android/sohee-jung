@@ -25,7 +25,7 @@ class HomeViewModel : ViewModel(){
     private fun getDummyData() = persistentListOf(
         HomeUiModel(
             friendImage = R.drawable.img_profile,
-            friendName = "가나다",
+            friendName = "가나",
             friendSaying = "안녕",
             subContent = SubContent.None
         ),
