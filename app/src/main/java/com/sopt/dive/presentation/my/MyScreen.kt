@@ -13,60 +13,51 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sopt.dive.R
 import com.sopt.dive.core.util.noRippleClickable
-import com.sopt.dive.data.UserInfo
-import com.sopt.dive.data.UserPrefs
 import com.sopt.dive.presentation.my.component.UserInfoContent
-import kotlinx.coroutines.launch
 
 @Composable
 fun MyRoute(
     paddingValues: PaddingValues,
-    onNavigateToSignIn: () -> Unit
-){
-    val context = LocalContext.current
-    val prefs = remember { UserPrefs(context) }
-    val profile by prefs.profileFlow.collectAsStateWithLifecycle(initialValue = UserInfo.EMPTY)
-    val scope = rememberCoroutineScope()
+    onNavigateToSignIn: () -> Unit,
+    viewModel: MyViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScreen(
-        nickname = profile.nickname,
-        userId = profile.userId,
-        password = profile.password,
-        mbti = profile.mbti,
-        paddingValues = paddingValues,
-        onLogoutClick = {
-            scope.launch {
-                prefs.clear()
-                onNavigateToSignIn()
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { sideEffect ->
+            when (sideEffect) {
+                is MySideEffect.NavigateToSignIn -> onNavigateToSignIn()
             }
         }
+    }
+
+    MyScreen(
+        uiState = uiState,
+        paddingValues = paddingValues,
+        onLogoutClick = viewModel::onLogoutClicked
     )
 }
 
 @Composable
 private fun MyScreen(
-    nickname: String,
-    userId: String,
-    password: String,
-    mbti: String,
+    uiState: MyState,
     paddingValues: PaddingValues,
     onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -76,7 +67,7 @@ private fun MyScreen(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.img_profile),
                 contentDescription = "logo",
@@ -86,14 +77,14 @@ private fun MyScreen(
             Spacer(modifier = Modifier.width(10.dp))
 
             Text(
-                text = nickname,
+                text = uiState.username,
                 color = Color.Black,
                 fontSize = 20.sp
             )
         }
 
         Text(
-            text = "안녕하세요. ${nickname}입니다.",
+            text = "안녕하세요. ${uiState.name}입니다.",
             color = Color.Black,
             fontSize = 20.sp
         )
@@ -101,38 +92,36 @@ private fun MyScreen(
         Spacer(modifier = Modifier.height(30.dp))
 
         UserInfoContent(
-            userInfoSection = "ID",
-            userInfoDescription = userId
+            userInfoSection = "USERNAME",
+            userInfoDescription = uiState.username
         )
 
         Spacer(modifier = Modifier.height(30.dp))
 
         UserInfoContent(
-            userInfoSection = "PW",
-            userInfoDescription = password
+            userInfoSection = "EMAIL",
+            userInfoDescription = uiState.email
         )
 
         Spacer(modifier = Modifier.height(30.dp))
 
         UserInfoContent(
-            userInfoSection = "NICKNAME",
-            userInfoDescription = nickname
+            userInfoSection = "EMAIL",
+            userInfoDescription = uiState.email
         )
 
         Spacer(modifier = Modifier.height(30.dp))
 
         UserInfoContent(
-            userInfoSection = "MBTI",
-            userInfoDescription = mbti
+            userInfoSection = "AGE",
+            userInfoDescription = uiState.age.toString()
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
             text = "로그아웃",
-            modifier = Modifier.noRippleClickable(
-                onClick = onLogoutClick
-            ),
+            modifier = Modifier.noRippleClickable(onClick = onLogoutClick),
             fontSize = 30.sp,
             fontStyle = FontStyle.Italic
         )
