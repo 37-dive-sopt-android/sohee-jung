@@ -29,8 +29,8 @@ class MyViewModel(
 
     private fun loadData(){
         viewModelScope.launch {
-            val userId = userPrefs.getUserId() ?: return@launch
-            val result = myRepository.getUser(userId)
+            val userId = userPrefs.getUserId()
+            val result = myRepository.getUser(userId!!)
 
             result.onSuccess { response ->
                 val data = response.data
@@ -39,18 +39,19 @@ class MyViewModel(
                     it.copy(
                         id = data.id,
                         name = data.name,
+                        username = data.username,
                         email = data.email,
                         age = data.age
                     )
                 }
             }
         }
-
     }
 
     fun onLogoutClicked(){
         viewModelScope.launch {
             _sideEffect.emit(MySideEffect.NavigateToSignIn)
+            userPrefs.clear()
         }
     }
 }

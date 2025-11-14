@@ -48,8 +48,8 @@ class UserPrefs(private val context: Context) {
     suspend fun getUserId(): Long? {
         return context.userDatastore.data
             .map { p -> p[UserInfoDatastore.userId] }
-            .first()               // String? 하나 꺼내고
-            ?.toLongOrNull()       // Long? 으로 변환
+            .first()
+            ?.toLongOrNull()
     }
 
     suspend fun setLoggedIn(isLoggedIn: Boolean){

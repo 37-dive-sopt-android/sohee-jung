@@ -6,8 +6,8 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface MyService {
-    @GET("/users/{id}")
-    fun getUser(
+    @GET("/api/v1/users/{id}")
+    suspend fun getUser(
         @Path("id") id: Long
     ): BaseResponse<MyResponseDto>
 }
