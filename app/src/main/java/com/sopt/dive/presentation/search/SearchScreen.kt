@@ -55,8 +55,7 @@ private fun SearchScreen(
         animationSpec = tween(durationMillis = 500),
         label = "rotation"
     )
-    val isReversing = !isCard1Flipped && rotation > 0f
-    val showBack = if (isReversing) rotation >= 90f else rotation > 90f
+    val showBack = if (rotation > 90f) rotation >= 90f else rotation > 90f
     val imageAnim1 = if (showBack) R.drawable.img_back else R.drawable.img_profile
 
 
