@@ -18,9 +18,11 @@ class MyViewModel(
     private val userPrefs: UserPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MyState())
+    // asStateFlow
     val uiState: StateFlow<MyState> = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<MySideEffect>()
+    // sharedFlow
     val sideEffect: SharedFlow<MySideEffect> = _sideEffect.asSharedFlow()
 
     init {
@@ -28,6 +30,7 @@ class MyViewModel(
     }
 
     private fun loadData(){
+        // viewModelScope 사용
         viewModelScope.launch {
             val userId = userPrefs.getUserId()
             val result = myRepository.getUser(userId!!)
@@ -49,6 +52,7 @@ class MyViewModel(
     }
 
     fun onLogoutClicked(){
+        // viewModelScope 사용
         viewModelScope.launch {
             _sideEffect.emit(MySideEffect.NavigateToSignIn)
             userPrefs.clear()

@@ -17,9 +17,11 @@ class SignUpViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SignUpState())
+    // asStateFlow
     val uiState: StateFlow<SignUpState> = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<SignUpSideEffect>()
+    // sharedFlow
     val sideEffect: SharedFlow<SignUpSideEffect> = _sideEffect.asSharedFlow()
 
     fun updateUserId(username: String) {
@@ -66,6 +68,7 @@ class SignUpViewModel(
         val email = uiState.value.email
         val age = uiState.value.age
 
+        // viewModelScope 사용
         viewModelScope.launch {
             val result = authRepository.postSignUp(
                 SignUpRequestDto(
