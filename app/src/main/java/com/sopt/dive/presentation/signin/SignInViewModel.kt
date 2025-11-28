@@ -19,9 +19,10 @@ class SignInViewModel(
     private val userPrefs: UserPrefs
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SignInState())
+    // asStateFlow
     val uiState: StateFlow<SignInState> = _uiState.asStateFlow()
-
     private val _sideEffect = MutableSharedFlow<SignInSideEffect>()
+    // sharedFlow
     val sideEffect: SharedFlow<SignInSideEffect> = _sideEffect.asSharedFlow()
 
     fun updateUserId(username: String) {
@@ -46,6 +47,7 @@ class SignInViewModel(
         val username = uiState.value.username
         val password = uiState.value.password
 
+        // viewModelScope 사용
         viewModelScope.launch {
             val result = authRepository.postSignIn(
                 SignInRequestDto(
