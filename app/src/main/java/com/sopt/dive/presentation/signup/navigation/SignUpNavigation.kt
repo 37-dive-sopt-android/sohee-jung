@@ -19,7 +19,7 @@ fun NavGraphBuilder.signUpGraph(
 ){
     composable<SignUp> {
         SignUpRoute(
-            onSignUpClick = onNavigateToSignIn,
+            navigateToSignIn = onNavigateToSignIn,
             paddingValues = paddingValues
 
         )

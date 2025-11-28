@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sopt.dive.presentation.home.component.UserFriendsItem
-import com.sopt.dive.presentation.home.model.HomeUiState
+import com.sopt.dive.presentation.home.model.HomeUiModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -23,14 +23,14 @@ fun HomeRoute(
 
     HomeScreen(
         paddingValues = paddingValues,
-        userFriends = uiState.value
+        userFriends = uiState.value.friends
     )
 }
 
 @Composable
 private fun HomeScreen(
     paddingValues: PaddingValues,
-    userFriends: ImmutableList<HomeUiState>,
+    userFriends: ImmutableList<HomeUiModel>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(

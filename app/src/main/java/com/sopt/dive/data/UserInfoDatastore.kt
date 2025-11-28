@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.sopt.dive.core.util.Keys
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 
@@ -36,6 +37,19 @@ class UserPrefs(private val context: Context) {
             p[UserInfoDatastore.nickname] = profile.nickname
             p[UserInfoDatastore.mbti] = profile.mbti
         }
+    }
+
+    suspend fun setUserId(userId: Long) {
+        context.userDatastore.edit { p ->
+            p[UserInfoDatastore.userId] = userId.toString()
+        }
+    }
+
+    suspend fun getUserId(): Long? {
+        return context.userDatastore.data
+            .map { p -> p[UserInfoDatastore.userId] }
+            .first()
+            ?.toLongOrNull()
     }
 
     suspend fun setLoggedIn(isLoggedIn: Boolean){
